@@ -1,0 +1,14 @@
+USA
+This country is known for fast food.
+It is in North America.
+Its capital is Washington, D.C.
+
+Canada
+Known for maple syrup.
+It has ten provinces.
+Its capital is Ottawa.
+
+Mexico
+Famous for tacos and mariachi music.
+Shares a border with the USA.
+Its capital is Mexico City.
