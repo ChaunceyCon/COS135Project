@@ -1,6 +1,10 @@
-# COS 135 Final Project: Guess The Country
+COS 135 Final Project: Guess The Country
 
-## Description
+Name: Chauncey O'Connell
+Date: May/9/2025
+Class: COS 135
+
+Description
 This program is a country guessing game. It loads countries and their hints from continent text files (`africa.txt`, `asia.txt`, etc.), randomly selects a country, and presents three hints for the user to guess the country. The menu allows launching the game, viewing credits, or exiting.
 
 The "something not explicitly taught in class" is text colorization.
