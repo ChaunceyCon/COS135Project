@@ -1,19 +1,20 @@
-CC=gcc
-CFLAGS=-Wall
+CC = gcc
+CFLAGS = -Wall -Wextra -std=c11
 
-all: game
+# Source files
+SRC = main.c menu.c game.c add_country.c colors.c
 
-game: main.o menu.o country.o
-	$(CC) $(CFLAGS) -o game main.o menu.o country.o
+# Output binary
+TARGET = guess_country
 
-main.o: main.c menu.h
-	$(CC) $(CFLAGS) -c main.c
+# Default target
+all: $(TARGET)
 
-menu.o: menu.c menu.h country.h
-	$(CC) $(CFLAGS) -c menu.c
+# Link object files
+$(TARGET): $(SRC)
+	$(CC) $(CFLAGS) -o $(TARGET) $(SRC)
 
-country.o: country.c country.h
-	$(CC) $(CFLAGS) -c country.c
-
+# Clean up build artifacts
 clean:
-	rm -f *.o game
+	rm -f $(TARGET) *.o
+

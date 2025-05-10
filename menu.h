@@ -1,10 +1,9 @@
+// menu.h
 #ifndef MENU_H
 #define MENU_H
 
 void show_menu();
-void game_launcher();
 
 #endif
-
 
 
