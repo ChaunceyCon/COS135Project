@@ -19,14 +19,14 @@ typedef struct {
 } Country;
 
 // Loads all countries from one continent file.
-//   filename: path to e.g. "asia.txt"
+//   filename: path to asia.txt or etc
 //   outCount: pointer to int to receive how many were loaded
-// Returns a malloc’d array of Country; caller must free it.
+// Returns a malloc array of Country; caller must free it.
 Country *loadCountriesFromFile(const char *filename, int *outCount);
 
-// Loads countries from all continent files (excluding Antarctica).
+// Loads countries from all continent files.
 //   outTotal: pointer to int to receive total countries loaded
-// Returns a malloc’d array of Country; caller must free it.
+// Returns a malloc array of Country, caller must free it.
 Country *loadAllCountries(int *outTotal);
 
 // Frees the array returned by loadCountriesFromFile or loadAllCountries
@@ -36,7 +36,4 @@ void freeCountries(Country *countries);
 int getRandomIndex(int totalCount);
 
 #endif // COUNTRY_H
-
-
-
 

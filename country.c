@@ -1,43 +1,14 @@
-// country.c
-// ——————————————————————————————————————————————————————————————
-// Implements loading country data from text files, merging them,
-// and selecting a random entry.
+// Implements loading country data from text files, merging them, and selecting a random entry.
 
 #include "country.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 
-// Might remove what is under
-// #include <sys/stat.h>
-// #include <sys/types.h>
-// #include <errno.h>
-// #include <string.h>  // For strerror
-
 
 // loadCountriesFromFile:
-//   Reads countries from a single file in the format:
-//
-//     CountryName
-//     Hint line 1
-//     Hint line 2
-//     Hint line 3
-//
-//   (blank lines are skipped)
-//
+//   Reads countries from a single file in the format
 //   Returns a malloc’d array of Country and sets *outCount.
-
-// Ensures the data/ folder exists, creates it if not
-void ensure_data_directory_exists() {
-    struct stat st = {0};
-
-    if (stat("data", &st) == -1) {
-        if (mkdir("data", 0700) != 0) {
-            printf("Error creating data directory: %s\n", strerror(errno));
-        }
-    }
-}
-
 
 Country *loadCountriesFromFile(const char *filename, int *outCount) {
     FILE *fp = fopen(filename, "r");
@@ -52,7 +23,7 @@ Country *loadCountriesFromFile(const char *filename, int *outCount) {
     char buffer[MAX_LINE_LEN];
 
     while (1) {
-        // Read country name (skip blank lines)
+        // Read country name 
         if (!fgets(buffer, sizeof(buffer), fp)) 
             break;
         // Remove newline/carriage return
@@ -94,16 +65,15 @@ Country *loadCountriesFromFile(const char *filename, int *outCount) {
     return arr;
 }
 
-// -----------------------------------------------------------------------------
+
 // loadAllCountries:
 //   Calls loadCountriesFromFile for each continent file (except Antarctica),
 //   merges the results into one big array, and returns it.
-// -----------------------------------------------------------------------------
+
 Country *loadAllCountries(int *outTotal) {
     const char *files[] = {
         "asia.txt", "europe.txt", "north_america.txt",
         "south_america.txt", "africa.txt", "australia.txt"
-        // Antarctica.txt intentionally omitted
     };
     const int fileCount = sizeof(files) / sizeof(files[0]);
 
@@ -134,20 +104,17 @@ Country *loadAllCountries(int *outTotal) {
     return all;
 }
 
-// -----------------------------------------------------------------------------
+
 // freeCountries:
 //   Frees the array returned by loadCountriesFromFile or loadAllCountries.
-// -----------------------------------------------------------------------------
 void freeCountries(Country *countries) {
     free(countries);
 }
 
-// -----------------------------------------------------------------------------
+
 // getRandomIndex:
 //   Returns a random index in [0, totalCount).  Call srand(time(NULL)) first.
-// -----------------------------------------------------------------------------
 int getRandomIndex(int totalCount) {
     if (totalCount <= 0) return 0;
     return rand() % totalCount;
 }
-

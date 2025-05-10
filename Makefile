@@ -1,20 +1,25 @@
+# Compiler and flags
 CC = gcc
-CFLAGS = -Wall -Wextra -std=c11
+CFLAGS = -Wall -Wextra -g
+
+# Executable name
+EXEC = guess_country
 
 # Source files
-SRC = main.c menu.c game.c add_country.c colors.c
+SRCS = main.c menu.c country.c
+OBJS = $(SRCS:.c=.o)
 
-# Output binary
-TARGET = guess_country
+# Header files
+DEPS = menu.h country.h colors.h
 
-# Default target
-all: $(TARGET)
+# Build target
+$(EXEC): $(OBJS)
+	$(CC) $(CFLAGS) -o $(EXEC) $(OBJS)
 
-# Link object files
-$(TARGET): $(SRC)
-	$(CC) $(CFLAGS) -o $(TARGET) $(SRC)
+# Compile .c files into .o
+%.o: %.c $(DEPS)
+	$(CC) $(CFLAGS) -c $< -o $@
 
-# Clean up build artifacts
+# Clean target to remove generated files
 clean:
-	rm -f $(TARGET) *.o
-
+	rm -f $(EXEC) *.o

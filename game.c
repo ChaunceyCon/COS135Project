@@ -1,10 +1,5 @@
-// game.c
-
 #include <stdio.h>
-#include <stdlib.h>
 #include <string.h>
-#include <time.h>
-#include "colors.h"
 
 #define MAX_HINTS 3
 #define MAX_COUNTRIES 100
@@ -13,85 +8,78 @@
 struct Country {
     char name[100];
     char hints[MAX_HINTS][255];  // 3 hints for each country
-    char continent[20];          // Store the continent name
 };
 
-// Function to read country data from all files in the data directory
-int load_all_country_data(struct Country countries[]) {
-    const char *filenames[] = {
-        "data/Africa.txt", "data/Asia.txt", "data/Europe.txt",
-        "data/NorthAmerica.txt", "data/SouthAmerica.txt",
-        "data/Oceania.txt", "data/Antarctica.txt"
-    };
-    const char *continents[] = {
-        "Africa", "Asia", "Europe", "North America", "South America", "Oceania", "Antarctica"
-    };
-
-    int country_count = 0;
-    for (int i = 0; i < 7; i++) {
-        FILE *file = fopen(filenames[i], "r");
-        if (file == NULL) continue;
-
-        while (fgets(countries[country_count].name, sizeof(countries[country_count].name), file)) {
-            // Remove newline from name
-            countries[country_count].name[strcspn(countries[country_count].name, "\n")] = 0;
-
-            for (int j = 0; j < MAX_HINTS; j++) {
-                if (!fgets(countries[country_count].hints[j], sizeof(countries[country_count].hints[j]), file)) break;
-                countries[country_count].hints[j][strcspn(countries[country_count].hints[j], "\n")] = 0;
-            }
-
-            strncpy(countries[country_count].continent, continents[i], sizeof(countries[country_count].continent));
-            country_count++;
-        }
-
-        fclose(file);
+// Function to read country data from a file
+int load_country_data(const char *filename, struct Country countries[]) {
+    FILE *file = fopen(filename, "r");
+    if (file == NULL) {
+        printf("Error: Could not open file.\n");
+        return 0;
     }
 
+    int country_count = 0;
+    while (fscanf(file, "%99[^\n]\n", countries[country_count].name) == 1) {
+        for (int i = 0; i < MAX_HINTS; i++) {
+            if (fscanf(file, "%255[^\n]\n", countries[country_count].hints[i]) != 1) {
+                break;
+            }
+        }
+        country_count++;
+    }
+
+    fclose(file);
     return country_count;
 }
 
 // Function to start the guessing game
 void start_game() {
     struct Country countries[MAX_COUNTRIES];
-
-    int country_count = load_all_country_data(countries);
+    
+    // Load country data from the file
+    int country_count = load_country_data("data.txt", countries);
     if (country_count == 0) {
-        printf("No country data available. Please add countries first.\n");
-        return;
+        return; // If no data is loaded, exit the game
     }
-
-    srand((unsigned)time(NULL));
-    int country_index = rand() % country_count;
+    
+    // Pick a random country index 
+    int country_index = 0;
     struct Country country = countries[country_index];
-
+    
     char user_guess[100];
     int correct_guess = 0;
     int hint_index = 0;
-
-    const char *color = get_continent_color(country.continent);
-
+    
     printf("Welcome to Guess the Country!\n\n");
-
-    while (hint_index < MAX_HINTS && !correct_guess) {
-        printf("%sHint %d: %s%s\n", color, hint_index + 1, country.hints[hint_index], RESET_COLOR);
+    
+    // Loop to give hints and take user input
+    while (hint_index < 3 && !correct_guess) {
+        printf("Hint %d: %s\n", hint_index + 1, country.hints[hint_index]);
         printf("Your guess: ");
         fgets(user_guess, sizeof(user_guess), stdin);
+        
+        // Remove trailing newline from fgets input
         user_guess[strcspn(user_guess, "\n")] = 0;
-
-        // if (strcasecmp(user_guess, country.name) == 0) {
-            if (strcmp(user_guess, country.name) == 0) {
-            printf("%sCorrect! The country is %s.%s\n", color, country.name, RESET_COLOR);
+        
+        // Check if the guess is correct
+        if (strcasecmp(user_guess, country.name) == 0) {
+            printf("Correct! The country is %s.\n", country.name);
             correct_guess = 1;
         } else {
             printf("Sorry, that's incorrect. Let's move to the next hint.\n\n");
         }
-
+        
         hint_index++;
     }
-
+    
+    // If the user didn't guess correctly, reveal the country
     if (!correct_guess) {
-        printf("Sorry, you couldn't guess the country. The correct answer is %s%s%s.\n", color, country.name, RESET_COLOR);
+        printf("Sorry, you couldn't guess the country. The correct answer is %s.\n", country.name);
     }
 }
 
+// Main function to run the game
+int main() {
+    start_game();
+    return 0;
+}
